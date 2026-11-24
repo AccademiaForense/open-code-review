@@ -547,7 +547,13 @@ runs:
         # and silently changes the runtime during one action execution.
         OCR_NO_UPDATE: "1"
       run: |
-        npm install -g "@alibaba-group/open-code-review@${OCR_VERSION}"
+        # Fork AccademiaForense: la CLI e gia nell'immagine del runner
+        # (afod-datalake, infra/github-runner/Dockerfile), compilata da questo
+        # branch; niente npm. ocr_version non si usa.
+        if ! command -v ocr >/dev/null 2>&1; then
+          echo "::error::ocr non e nel PATH: serve l'immagine del runner con la CLI"
+          exit 1
+        fi
         echo "OpenCodeReview installed:"
         OCR_VERSION_OUTPUT="$(ocr version 2>/dev/null)" || {
           echo "::error::Unable to read the installed OpenCodeReview version"
